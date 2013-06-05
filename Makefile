@@ -1,11 +1,17 @@
-.PHONY: all clean
+IDL=idl
+
+.PHONY: all display clean
 
 all: cpu-vs-gpu.png
 
 cpu-vs-gpu.png: intel-sp.csv intel-dp.csv nvidia-sp.csv nvidia-dp.csv mg_cpu_vs_gpu.pro
-	$(IDL) mg_cpu_vs_gpu
+	$(IDL) -quiet -e mg_cpu_vs_gpu
+	@make display
+
+display:
+	@open cpu-vs-gpu.png
 
 clean:
-	rm -f cpu-vs-gpu.png
+	rm -f cpu-vs-gpu.{ps,png}
 
 

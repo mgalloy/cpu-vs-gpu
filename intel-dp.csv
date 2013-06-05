@@ -1,9 +1,8 @@
-"Pentium 4", ,
-"", ,
-"Woodcrest", ,
-"Harpertown", ,
-"Bloomfield", ,
-"Westmere", ,
-"Sandy Bridge", ,
-"Ivy Bridge", ,
-"Haswell", ,
+"Pentium 4", , ""
+"", , ""
+"Woodcrest", , "2006-06-01"
+"Harpertown", , "2007-11-01"
+"Bloomfield", , "2009-03-01"
+"Westmere", 134.4, "2011-04-01"
+"Sandy Bridge", 243.2, "2012-03-01"
+"Haswell", 486.4, "2013-06-02"
