@@ -111,5 +111,5 @@ pro mg_cpu_vs_gpu, thumbnail=thumbnail
 
   mg_psend
   mg_convert, basename, $
-              max_dimensions=keyword_set(thumbnail) ? [350, 250] : [800, 600]
+              max_dimensions=keyword_set(thumbnail) ? [600, 500] : [800, 600]
 end
