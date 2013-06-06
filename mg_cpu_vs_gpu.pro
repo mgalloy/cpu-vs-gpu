@@ -29,7 +29,7 @@ pro mg_cpu_vs_gpu_series, dates, flops, names, $
                          ? (fltarr(n_elements(dates))) $
                          : y_name_correction
   oplot, dates, flops, $
-         color=mg_rgb2index(_color), thick=4., psym=psym, symsize=symsize
+         color=mg_rgb2index(_color), thick=6., psym=psym, symsize=symsize
   foreach n, names, i do begin
     xyouts, dates[i] - x_name_gap, $
             flops[i] + y_name_gap + _y_name_correction[i], $
@@ -41,7 +41,7 @@ pro mg_cpu_vs_gpu_series, dates, flops, names, $
 end
 
 
-pro mg_cpu_vs_gpu
+pro mg_cpu_vs_gpu, thumbnail=thumbnail
   compile_opt strictarr, hidden
 
   !quiet = 1
@@ -69,13 +69,14 @@ pro mg_cpu_vs_gpu
   nvidia_dp_flops = float(nvidia_dp.field2)
   nvidia_dp_dates = mg_cpu_vs_gpu_julday(nvidia_dp.field3)
 
-  mg_psbegin, filename='cpu-vs-gpu.ps', xsize=7, ysize=5, /inches
+  basename = 'cpu-vs-gpu' + (keyword_set(thumbnail) ? '-thumbnail' : '')
+  mg_psbegin, filename=basename + '.ps', xsize=7, ysize=5, /inches
   !p.font = 0
 
   psym = mg_usersym(/circle, /fill, /with_line)
   dummy = label_date(date_format='%Y')
 
-  plot, intel_sp_dates, intel_sp_flops, xstyle=8, ystyle=8, /nodata, $
+  plot, intel_sp_dates, intel_sp_flops, xstyle=8, ystyle=8, /nodata, /noerase, $
         xtitle='!CRelease date', xtickformat='label_date', xtickunits='Time', xminor=4, $
         xmargin=[10, 12], $
         ytitle='Theoretical peak (GFLOP/s)', ymargin=[6, 2], yticks=10, yrange=[0, 5000], $
@@ -95,7 +96,7 @@ pro mg_cpu_vs_gpu
                         color=!color.dark_green, name='NVIDIA GPU DP', psym=psym
 
   mg_cpu_vs_gpu_series, intel_sp_dates, intel_sp_flops, strarr(n_elements(intel_sp_dates)), $
-                        color=!color.light_blue, name='Intel SP', psym=psym
+                        color=!color.sky_blue, name='Intel SP', psym=psym
 
   y_name_correction = fltarr(n_elements(intel_dp_dates))
   y_name_correction[0] = -70.0
@@ -109,5 +110,6 @@ pro mg_cpu_vs_gpu
                         y_name_correction=y_name_correction
 
   mg_psend
-  mg_convert, 'cpu-vs-gpu', max_dimensions=[800, 600]
+  mg_convert, basename, $
+              max_dimensions=keyword_set(thumbnail) ? [350, 250] : [800, 600]
 end
