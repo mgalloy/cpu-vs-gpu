@@ -73,7 +73,7 @@ pro mg_cpu_vs_gpu
   !p.font = 0
 
   psym = mg_usersym(/circle, /fill, /with_line)
-  dummy = label_date(date_format='%M %Z')
+  dummy = label_date(date_format='%Y')
 
   plot, intel_sp_dates, intel_sp_flops, xstyle=8, ystyle=8, /nodata, $
         xtitle='!CRelease date', xtickformat='label_date', xtickunits='Time', xminor=4, $
