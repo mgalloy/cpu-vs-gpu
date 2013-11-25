@@ -17,10 +17,13 @@ pro mg_cpu_vs_gpu_series, dates, flops, names, $
   compile_opt strictarr, hidden
 
   name_charsize = 0.6
+  category_name_charsize = 0.8
+
   y_name_gap = 100.0
   x_name_gap = 20.0
   x_annotation_gap = 75.0
   symsize = 0.75
+  thick = 8.0
 
   _color = n_elements(color) eq 0L ? !color.black : color
   _name = n_elements(name) eq 0L ? '' : name
@@ -29,7 +32,7 @@ pro mg_cpu_vs_gpu_series, dates, flops, names, $
                          ? (fltarr(n_elements(dates))) $
                          : y_name_correction
   oplot, dates, flops, $
-         color=mg_rgb2index(_color), thick=6., psym=psym, symsize=symsize
+         color=mg_rgb2index(_color), thick=thick, psym=psym, symsize=symsize
   foreach n, names, i do begin
     xyouts, dates[i] - x_name_gap, $
             flops[i] + y_name_gap + _y_name_correction[i], $
@@ -37,12 +40,14 @@ pro mg_cpu_vs_gpu_series, dates, flops, names, $
             charsize=name_charsize, alignment=1.0, color=mg_rgb2index(_color)
   endforeach
   xyouts, dates[-1] + x_annotation_gap, flops[-1], _name, $
-          charsize=0.75, color=mg_rgb2index(_color)
+          charsize=category_name_charsize, color=mg_rgb2index(_color)
 end
 
 
 pro mg_cpu_vs_gpu, thumbnail=thumbnail
   compile_opt strictarr, hidden
+
+  char_size = 1.25
 
   !quiet = 1
 
@@ -80,7 +85,7 @@ pro mg_cpu_vs_gpu, thumbnail=thumbnail
         xtitle='!CRelease date', xtickformat='label_date', xtickunits='Time', xminor=4, $
         xmargin=[10, 12], $
         ytitle='Theoretical peak (GFLOP/s)', ymargin=[6, 2], yticks=10, yrange=[0, 5000], $
-        charsize=0.8, $
+        charsize=char_size, $
         ticklen=-0.01
 
   mg_decomposed, 1
