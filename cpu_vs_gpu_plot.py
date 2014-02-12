@@ -4,6 +4,11 @@ def makePlot():
     import pylab as pl
     import csv    
     
+    xlimMax = 2014
+    xlimMaxDate = '%s-01-01'%xlimMax
+    ylimMax = 5500 # GFLOP/s
+    textSize = 10
+    
     fileNames = ['intel-sp.csv', 'intel-dp.csv', 'nvidia-sp.csv', 'nvidia-dp.csv']
     legendNames = ['Intel CPU SP', 'Intel CPU DP', 'Nvidia GPU SP', 'Nvidia GPU DP']      
     
@@ -21,14 +26,12 @@ def makePlot():
             data[legendNames[i]]['dates'].append(row[2].strip(' "'))
                 
     # plot data
-    dataTicks = ["%s"%v for v in range(2000,2015,2)]
-    dataTicksValues = pl.datestr2num(["%s-01-01"%v for v in range(2000,2015,2)])
+    dataTicks = ["%s"%v for v in range(2000,xlimMax+1,2)]
+    dataTicksValues = pl.datestr2num(["%s-01-01"%v for v in range(2000,xlimMax+1,2)])
 
     bbox_props = dict(boxstyle="round", fc="w", ec="0.5", alpha=0.9) 
-    textSize = 10
     
     fig = pl.figure()
-    #pl.subplot(121)
     for d in data.values():
         x = pl.datestr2num(d['dates'])
         y = d['flops']
@@ -37,19 +40,16 @@ def makePlot():
         if d['legend'] is not 'Intel CPU SP':
             for n in range(len(d['names'])):
                 pl.text(x[n]-50, y[n]+50, d['names'][n], 
-                        ha="right", va="top", size=textSize, color=c)#, bbox=bbox_props)
+                        ha="right", va="top", size=textSize, color=c)
         pl.text(x[-1]+150, y[-1], d['legend'], 
                 ha="left", va="center", size=textSize+2, color=c,bbox=bbox_props)
 
-    #pl.legend(loc='upper left')
     pl.xlabel('Release date', fontsize=textSize+4)
     pl.ylabel('Theoretical peak (GFLOP/s)', fontsize=textSize+4)
-    pl.xlim((pl.datestr2num('2000-01-01'), pl.datestr2num('2014-01-01')))
+    pl.xlim((pl.datestr2num('2000-01-01'), pl.datestr2num(xlimMaxDate)))
     pl.xticks(dataTicksValues, dataTicks, fontsize=textSize)
     pl.yticks(fontsize=textSize)
-    pl.ylim((0, 5500))
-    #fig.subplots_adjust(right=1.8)
-    #pl.gca().set_yscale('log')
+    pl.ylim((0, ylimMax))
     pl.show()
     
     fig.savefig('cpu_vs_gpu.png', bbox_inches='tight')
