@@ -1,8 +1,28 @@
+import pylab as pl
 
+def plotTextWithWhiteOutline(x, y, text, textSize, color, offset, ha):
+    
+    xx = x+offset[0]
+    yy = y+offset[1]
+    
+    # Plot white border around text
+    c = 'LemonChiffon'
+    w = 'bold'
+    outline = 3
+    pl.text(xx-outline, yy, text, ha=ha, va="top", size=textSize, color=c, weight=w)
+    pl.text(xx+outline, yy, text, ha=ha, va="top", size=textSize, color=c, weight=w)
+    pl.text(xx, yy+outline, text, ha=ha, va="top", size=textSize, color=c, weight=w)
+    pl.text(xx, yy-outline, text, ha=ha, va="top", size=textSize, color=c, weight=w)
+    pl.text(xx-outline, yy-outline, text, ha=ha, va="top", size=textSize, color=c, weight=w)
+    pl.text(xx+outline, yy+outline, text, ha=ha, va="top", size=textSize, color=c, weight=w)
+    pl.text(xx-outline, yy+outline, text, ha=ha, va="top", size=textSize, color=c, weight=w)
+    pl.text(xx+outline, yy-outline, text, ha=ha, va="top", size=textSize, color=c, weight=w)
+  
+    pl.text(xx, yy, text, ha=ha, va="top", size=textSize, color=color, weight=w)
 
-def makePlot():
-    import pylab as pl
-    import csv    
+def makePlot(): 
+    
+    import csv
     
     xlimMax = 2014
     xlimMaxDate = '%s-01-01'%xlimMax
@@ -37,12 +57,20 @@ def makePlot():
         y = d['flops']
         c = d['color']
         pl.plot(x, y, 'o-', color=c, label=d['legend'], lw=2)
-        if d['legend'] is not 'Intel CPU SP':
-            for n in range(len(d['names'])):
-                pl.text(x[n]-50, y[n]+50, d['names'][n], 
-                        ha="right", va="top", size=textSize, color=c)
-        pl.text(x[-1]+150, y[-1], d['legend'], 
-                ha="left", va="center", size=textSize+2, color=c,bbox=bbox_props)
+        i = 0
+        for n in range(len(d['names'])):
+            i += 1
+            if i < 3: 
+                continue
+            if d['legend'] is 'Intel CPU SP' and i%2==0:
+                continue
+            if d['legend'] is 'Intel CPU DP' and i%2==1:
+                continue
+            offset = (-100, 50)
+            ha = 'right'
+            plotTextWithWhiteOutline(x[n], y[n], d['names'][n], textSize, c, offset, ha)
+
+        pl.text(x[-1]+150, y[-1], d['legend'], ha="left", va="center", size=textSize+2, color=c, bbox=bbox_props, weight='bold')
 
     pl.xlabel('Release date', fontsize=textSize+4)
     pl.ylabel('Theoretical peak (GFLOP/s)', fontsize=textSize+4)
@@ -50,6 +78,7 @@ def makePlot():
     pl.xticks(dataTicksValues, dataTicks, fontsize=textSize)
     pl.yticks(fontsize=textSize)
     pl.ylim((0, ylimMax))
+    #pl.gca().set_aspect(1.5)
     pl.show()
     
     fig.savefig('cpu_vs_gpu.png', bbox_inches='tight')
