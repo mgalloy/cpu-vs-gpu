@@ -74,6 +74,17 @@ pro mg_cpu_vs_gpu, thumbnail=thumbnail
   nvidia_dp_flops = float(nvidia_dp.field2)
   nvidia_dp_dates = mg_cpu_vs_gpu_julday(nvidia_dp.field3)
 
+  dates = [intel_sp_dates, intel_dp_dates, nvidia_sp_dates, nvidia_dp_dates]
+  date_range = [min(dates), max(dates)]
+  date_pad = 0.05 * (date_range[1] - date_range[0])
+  date_range = [date_range[0] - 2 * date_pad, date_range[1] + date_pad]
+
+  flops = [intel_sp_flops, intel_dp_flops, nvidia_sp_flops, nvidia_dp_flops]
+  flops_range = [0, max(flops)]
+  flops_tick_value = 500
+  n_flops_ticks = ceil(flops_range[1] / flops_tick_value)
+  flops_range[1] = n_flops_ticks * flops_tick_value
+
   basename = 'cpu-vs-gpu' + (keyword_set(thumbnail) ? '-thumbnail' : '')
   mg_psbegin, filename=basename + '.ps', xsize=7, ysize=5, /inches
   !p.font = 0
@@ -81,10 +92,10 @@ pro mg_cpu_vs_gpu, thumbnail=thumbnail
   psym = mg_usersym(/circle, /fill, /with_line)
   dummy = label_date(date_format='%Y')
 
-  plot, intel_sp_dates, intel_sp_flops, xstyle=8, ystyle=8, /nodata, /noerase, $
+  plot, intel_sp_dates, intel_sp_flops, xstyle=9, ystyle=9, /nodata, /noerase, $
         xtitle='!CRelease date', xtickformat='label_date', xtickunits='Time', xminor=4, $
-        xmargin=[10, 12], $
-        ytitle='Theoretical peak (GFLOP/s)', ymargin=[6, 2], yticks=10, yrange=[0, 5000], $
+        xmargin=[10, 12], xrange=date_range, $
+        ytitle='Theoretical peak (GFLOP/s)', ymargin=[6, 2], yticks=n_flops_ticks, yrange=flops_range, $
         charsize=char_size, $
         ticklen=-0.01
 
