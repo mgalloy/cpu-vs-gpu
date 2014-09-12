@@ -108,19 +108,28 @@ pro mg_cpu_vs_gpu, thumbnail=thumbnail
                         color=!color.sea_green, name='NVIDIA GPU SP', psym=psym, $
                         y_name_correction=y_name_correction
 
+  y_name_correction = fltarr(n_elements(nvidia_dp_dates))
+  y_name_correction[0] = 100.0
   mg_cpu_vs_gpu_series, nvidia_dp_dates, nvidia_dp_flops, nvidia_dp_names, $
-                        color=!color.dark_green, name='NVIDIA GPU DP', psym=psym
+                        color=!color.dark_green, name='NVIDIA GPU DP', psym=psym, $
+                        y_name_correction=y_name_correction
 
   mg_cpu_vs_gpu_series, intel_sp_dates, intel_sp_flops, strarr(n_elements(intel_sp_dates)), $
                         color=!color.sky_blue, name='Intel SP', psym=psym
 
   y_name_correction = fltarr(n_elements(intel_dp_dates))
-  y_name_correction[0] = -70.0
+  y_name_correction[0] = -80.0
   y_name_correction[1] = 0.0
-  y_name_correction[2] = 0.0
+  ;y_name_correction[2] = 120.0
+  y_name_correction[2] = -250.0
   y_name_correction[3] = -50.0
-  y_name_correction[4] = 100.0
-  y_name_correction[5] = -60.0
+  y_name_correction[4] = 0.0
+  ;y_name_correction[5] = -60.0
+  y_name_correction[5] = -300.0
+  y_name_correction[7] = 120.0
+  ;y_name_correction[8] = 70.0
+  y_name_correction[8] = -300.0
+  y_name_correction[9] = 0.0
   mg_cpu_vs_gpu_series, intel_dp_dates, intel_dp_flops, intel_dp_names, $
                         color=!color.dark_blue, name='Intel DP', psym=psym, $
                         y_name_correction=y_name_correction
