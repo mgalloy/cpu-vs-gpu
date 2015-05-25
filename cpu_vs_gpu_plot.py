@@ -1,88 +1,104 @@
-import pylab as pl
+#!/usr/bin/env python
 
-def plotTextWithWhiteOutline(x, y, text, textSize, color, offset, ha):
-    
-    xx = x+offset[0]
-    yy = y+offset[1]
-    
-    # Plot white border around text
-    c = 'LemonChiffon'
-    w = 'bold'
-    outline = 3
-    pl.text(xx-outline, yy, text, ha=ha, va="top", size=textSize, color=c, weight=w)
-    pl.text(xx+outline, yy, text, ha=ha, va="top", size=textSize, color=c, weight=w)
-    pl.text(xx, yy+outline, text, ha=ha, va="top", size=textSize, color=c, weight=w)
-    pl.text(xx, yy-outline, text, ha=ha, va="top", size=textSize, color=c, weight=w)
-    pl.text(xx-outline, yy-outline, text, ha=ha, va="top", size=textSize, color=c, weight=w)
-    pl.text(xx+outline, yy+outline, text, ha=ha, va="top", size=textSize, color=c, weight=w)
-    pl.text(xx-outline, yy+outline, text, ha=ha, va="top", size=textSize, color=c, weight=w)
-    pl.text(xx+outline, yy-outline, text, ha=ha, va="top", size=textSize, color=c, weight=w)
-  
-    pl.text(xx, yy, text, ha=ha, va="top", size=textSize, color=color, weight=w)
+import argparse
+import csv
+import datetime
 
-def makePlot(): 
-    
-    import csv
-    
-    xlimMax = 2014
-    xlimMaxDate = '%s-01-01'%xlimMax
-    ylimMax = 5500 # GFLOP/s
-    textSize = 10
-    
-    fileNames = ['intel-sp.csv', 'intel-dp.csv', 'nvidia-sp.csv', 'nvidia-dp.csv']
-    legendNames = ['Intel CPU SP', 'Intel CPU DP', 'Nvidia GPU SP', 'Nvidia GPU DP']      
-    
+import matplotlib.pyplot
+import matplotlib.dates
+import numpy as np
+
+
+def read_data():
+    filenames = ['intel-sp.csv',
+                 'intel-dp.csv',
+                 'nvidia-sp.csv',
+                 'nvidia-dp.csv']
+    legend_names = ['Intel CPU SP',
+                    'Intel CPU DP',
+                    'Nvidia GPU SP',
+                    'Nvidia GPU DP']
     colors = ['DeepSkyBlue', 'RoyalBlue', 'ForestGreen', 'DarkGreen']
-    # load data
+
+    date_format = '%Y-%m-%d'
     data = {}
-    for i in range(len(fileNames)):
-        data[legendNames[i]] = {'names':[], 'flops':[], 'dates':[], 
-                                'color':colors[i], 'legend':legendNames[i]}
-        f = open(fileNames[i])
-        csvReader = csv.reader(f)
-        for row in csvReader:
-            data[legendNames[i]]['names'].append(row[0])
-            data[legendNames[i]]['flops'].append(float(row[1]))
-            data[legendNames[i]]['dates'].append(row[2].strip(' "'))
-                
-    # plot data
-    dataTicks = ["%s"%v for v in range(2000,xlimMax+1,2)]
-    dataTicksValues = pl.datestr2num(["%s-01-01"%v for v in range(2000,xlimMax+1,2)])
+    for filename, legend_name, color in zip(filenames, legend_names, colors):
+        data[legend_name] = {'names': [],
+                             'flops': [],
+                             'dates': [],
+                             'placement_offset': [],
+                             'color': color,
+                             'legend': legend_name}
+        with open(filename, 'r') as f:
+            reader = csv.reader(f)
+            for row in reader:
+                data[legend_name]['names'].append(row[0])
+                data[legend_name]['flops'].append(float(row[1]))
+                d = datetime.datetime.strptime(row[2].strip(' "'), date_format)
+                data[legend_name]['dates'].append(d)
+                data[legend_name]['placement_offset'].append(float(row[4]))
+    return data
 
-    bbox_props = dict(boxstyle="round", fc="w", ec="0.5", alpha=0.9) 
-    
-    fig = pl.figure()
-    for d in data.values():
-        x = pl.datestr2num(d['dates'])
-        y = d['flops']
-        c = d['color']
-        pl.plot(x, y, 'o-', color=c, label=d['legend'], lw=2)
-        i = 0
-        for n in range(len(d['names'])):
-            i += 1
-            if i < 3: 
-                continue
-            if d['legend'] is 'Intel CPU SP' and i%2==0:
-                continue
-            if d['legend'] is 'Intel CPU DP' and i%2==1:
-                continue
-            offset = (-100, 50)
-            ha = 'right'
-            plotTextWithWhiteOutline(x[n], y[n], d['names'][n], textSize, c, offset, ha)
 
-        pl.text(x[-1]+150, y[-1], d['legend'], ha="left", va="center", size=textSize+2, color=c, bbox=bbox_props, weight='bold')
+def format_axes(ax, fontsize=8):
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.yaxis.set_ticks_position('left')
+    ax.xaxis.set_ticks_position('bottom')
+    ax.xaxis.set_major_formatter(matplotlib.dates.DateFormatter('%Y'))
 
-    pl.xlabel('Release date', fontsize=textSize+4)
-    pl.ylabel('Theoretical peak (GFLOP/s)', fontsize=textSize+4)
-    pl.xlim((pl.datestr2num('2000-01-01'), pl.datestr2num(xlimMaxDate)))
-    pl.xticks(dataTicksValues, dataTicks, fontsize=textSize)
-    pl.yticks(fontsize=textSize)
-    pl.ylim((0, ylimMax))
-    #pl.gca().set_aspect(1.5)
-    pl.show()
-    
-    fig.savefig('cpu_vs_gpu.png', bbox_inches='tight')
-    fig.savefig('cpu_vs_gpu.pdf', bbox_inches='tight')
+    for item in (ax.get_xticklabels() + ax.get_yticklabels()):
+        item.set_fontsize(fontsize)
 
-if __name__ == "__main__":
-    makePlot()
+
+def text_with_background(ax, x, y, offset, s, color):
+    label_ygap = 200
+    t = ax.text(x, y + label_ygap + offset, s,
+                color=color,
+                fontsize=7,
+                horizontalalignment='right')
+    #t.set_bbox({'color': '1.0', 'alpha': 0.5})
+
+
+def plot(output_filename):
+    data = read_data()
+
+    fig, ax = matplotlib.pyplot.subplots(nrows=1, ncols=1)
+    format_axes(ax)
+    ax.set_xlim(datetime.datetime(2000, 1, 1), datetime.datetime.today())
+
+    label_xgap = datetime.timedelta(100)
+
+    for name, series in data.items():
+        # plot series data
+        ax.plot(series['dates'], series['flops'], 'o-',
+                label=name,
+                color=series['color'],
+                linewidth=2.0)
+
+        # label series data points with architecture names
+        if name != 'Intel CPU SP':
+            for x, y, aname, offset in zip(series['dates'], series['flops'], series['names'], series['placement_offset']):
+                text_with_background(ax, x, y, offset, aname, series['color'])
+
+        # label series
+        ax.text(series['dates'][-1] + label_xgap, series['flops'][-1], name,
+                verticalalignment='center',
+                color=series['color'],
+                weight='bold',
+                fontsize=9)
+
+    ax.set_xlabel('Release date', size=12)
+    ax.set_ylabel('Theoretical peak (GFLOPS/s)', size=11)
+
+    matplotlib.pyplot.savefig(output_filename, bbox_inches='tight')
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='CPU vs GPU performance plot')
+    parser.add_argument('-o', '--output',
+                        help='filename for plot output',
+                        default='cpu_vs_gpu.pdf')
+    args = parser.parse_args()
+
+    plot(output_filename=args.output)
