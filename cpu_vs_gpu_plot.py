@@ -4,8 +4,9 @@ import argparse
 import csv
 import datetime
 
-import matplotlib.pyplot
 import matplotlib.dates
+import matplotlib.pyplot
+import matplotlib.ticker
 import numpy as np
 
 
@@ -43,9 +44,18 @@ def read_data():
 def format_axes(ax, fontsize=8):
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
-    ax.yaxis.set_ticks_position('left')
+
     ax.xaxis.set_ticks_position('bottom')
     ax.xaxis.set_major_formatter(matplotlib.dates.DateFormatter('%Y'))
+    ax.yaxis.set_ticks_position('left')
+
+    x_minor_locator = matplotlib.dates.MonthLocator(interval=3)
+    y_major_locator = matplotlib.ticker.MultipleLocator(1000)
+    y_minor_locator = matplotlib.ticker.MultipleLocator(250)
+
+    ax.xaxis.set_minor_locator(x_minor_locator)
+    ax.yaxis.set_major_locator(y_major_locator)
+    ax.yaxis.set_minor_locator(y_minor_locator)
 
     for item in (ax.get_xticklabels() + ax.get_yticklabels()):
         item.set_fontsize(fontsize)
@@ -74,6 +84,7 @@ def plot(output_filename):
         ax.plot(series['dates'], series['flops'], 'o-',
                 label=name,
                 color=series['color'],
+                markeredgecolor=series['color'],
                 linewidth=2.0)
 
         # label series data points with architecture names
