@@ -14,21 +14,29 @@ def read_data():
     filenames = ['intel-sp.csv',
                  'intel-dp.csv',
                  'nvidia-sp.csv',
-                 'nvidia-dp.csv']
+                 'nvidia-dp.csv',
+                 'nvidia-boost-sp.csv',
+                 'nvidia-boost-dp.csv']
     legend_names = ['Intel CPU SP',
                     'Intel CPU DP',
                     'Nvidia GPU SP',
-                    'Nvidia GPU DP']
-    colors = ['DeepSkyBlue', 'RoyalBlue', 'ForestGreen', 'DarkGreen']
+                    'Nvidia GPU DP',
+                    'Nvidia GPU SP (GPU Boost)',
+                    'Nvidia GPU DP (GPU Boost)']
+    colors = ['DeepSkyBlue', 'RoyalBlue',
+              'ForestGreen', 'DarkGreen',
+              'ForestGreen', 'DarkGreen']
+    linestyles = ['-', '-', '-', '-', '--', '--']
 
     date_format = '%Y-%m-%d'
     data = {}
-    for filename, legend_name, color in zip(filenames, legend_names, colors):
+    for filename, legend_name, color, ls in zip(filenames, legend_names, colors, linestyles):
         data[legend_name] = {'names': [],
                              'flops': [],
                              'dates': [],
                              'placement_offset': [],
                              'color': color,
+                             'linestyle': ls,
                              'legend': legend_name}
         with open(filename, 'r') as f:
             reader = csv.reader(f)
@@ -85,6 +93,7 @@ def plot(output_filename):
                 label=name,
                 color=series['color'],
                 markeredgecolor=series['color'],
+                linestyle=series['linestyle'],
                 linewidth=2.0)
 
         # label series data points with architecture names
