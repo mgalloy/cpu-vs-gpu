@@ -9,3 +9,4 @@
 "Ivy Bridge",224,"2012-04-23","i7-3770K, 4 cores * 3.5GHz * 16 ops/clock",0.0
 "Haswell",448,"2013-06-02","i7-4770K, 4 cores * 3.5GHz * 32 ops/clock",0.0
 "Haswell-E",896,"2014-08-29","i7-5960X, 8 cores * 3.5GHz * 32 ops/clock",0.0
+"Broadwell-E",947.2,"2016-05-30","i7-6900K, 8 cores * 3.7GHz * 32 ops/clock",0.0

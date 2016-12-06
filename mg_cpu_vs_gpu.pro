@@ -95,7 +95,7 @@ pro mg_cpu_vs_gpu, thumbnail=thumbnail
   plot, intel_sp_dates, intel_sp_flops, xstyle=9, ystyle=9, /nodata, /noerase, $
         xtitle='!CRelease date', xtickformat='label_date', xtickunits='Time', xminor=4, $
         xmargin=[10, 12], xrange=date_range, $
-        ytitle='Theoretical peak (GFLOP/s)', ymargin=[6, 2], yticks=n_flops_ticks, yrange=flops_range, $
+        ytitle='Theoretical peak (GFLOPS)', ymargin=[6, 2], yticks=n_flops_ticks, yrange=flops_range, $
         charsize=char_size, $
         ticklen=-0.01
 
