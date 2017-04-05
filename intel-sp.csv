@@ -5,8 +5,7 @@
 "Yorktown",96,"2009-01-01","Core 2 Quad Q9650, 4 cores * 3GHz * 8 ops/clock",0.0
 "Bloomfield",102.4,"2009-10-20","i7-960, 4 cores * 3.2GHz * 8 ops/clock",0.0
 "Westmere",158.4,"2011-06-26","i7-980, 6 cores * 3.3GHz * 8 ops/clock",0.0
-"Sandy Bridge",224,"2011-10-24","i7-2700K, 4 cores * 3.5GHz * 16 ops/clock",0.0
-"Ivy Bridge",224,"2012-04-23","i7-3770K, 4 cores * 3.5GHz * 16 ops/clock",0.0
-"Haswell",448,"2013-06-02","i7-4770K, 4 cores * 3.5GHz * 32 ops/clock",0.0
-"Haswell-E",896,"2014-08-29","i7-5960X, 8 cores * 3.5GHz * 32 ops/clock",0.0
-"Broadwell-E",947.2,"2016-05-30","i7-6900K, 8 cores * 3.7GHz * 32 ops/clock",0.0
+"Sandy Bridge",371.2,"2012-03-06","Xeon E5-2690, 8 cores * 2.9GHz * 16 ops/clock",0.0
+"Ivy Bridge",518.4,"2013-09-10","Xeon E5-2697 v2, 12 cores * 2.7GHz * 16 ops/clock",0.0
+"Haswell",1324.8,"2014-09-08","Xeon E5-2699 v3, 18 cores * 2.3GHz * 32 ops/clock",0.0
+"Broadwell",1548.8,"2016-04-01","Xeon E5-2699 v4, 22 cores * 2.2GHz * 32 ops/clock",0.0
