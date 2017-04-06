@@ -14,17 +14,12 @@ def read_data():
     filenames = ['intel-sp.csv',
                  'intel-dp.csv',
                  'nvidia-sp.csv',
-                 'nvidia-dp.csv',
-                 'nvidia-boost-sp.csv',
-                 'nvidia-boost-dp.csv']
+                 'nvidia-dp.csv']
     legend_names = ['Intel CPU SP',
                     'Intel CPU DP',
                     'Nvidia GPU SP',
-                    'Nvidia GPU DP',
-                    'Nvidia GPU SP (GPU Boost)',
-                    'Nvidia GPU DP (GPU Boost)']
-    colors = ['DeepSkyBlue', 'RoyalBlue',
-              'ForestGreen', 'DarkGreen',
+                    'Nvidia GPU DP']
+    colors = ['DodgerBlue','RoyalBlue',
               'ForestGreen', 'DarkGreen']
     linestyles = ['-', '-', '-', '-', '--', '--']
 
@@ -81,9 +76,13 @@ def text_with_background(ax, x, y, offset, s, color):
 def plot(output_filename):
     data = read_data()
 
-    fig, ax = matplotlib.pyplot.subplots(nrows=1, ncols=1)
+    # matplotlib.pyplot.rcParams["font.family"] = "Droid Sans"
+    fig, ax = matplotlib.pyplot.subplots(nrows=1, ncols=1, figsize=(9, 6))
+    ax.set_axisbelow(True)
+    ax.yaxis.grid(color='lightgray', linestyle='dotted')
     format_axes(ax)
     ax.set_xlim(datetime.datetime(2000, 1, 1), datetime.datetime.today())
+    ax.set_ylim(0, 11000)
 
     label_xgap = datetime.timedelta(100)
 
@@ -99,19 +98,19 @@ def plot(output_filename):
         # label series data points with architecture names
         if name != 'Intel CPU SP':
             for x, y, aname, offset in zip(series['dates'], series['flops'], series['names'], series['placement_offset']):
-                text_with_background(ax, x, y, offset, aname, series['color'])
+                text_with_background(ax, x, y, offset, aname, 'Blue' if name == 'Intel CPU DP' else series['color'])
 
         # label series
         ax.text(series['dates'][-1] + label_xgap, series['flops'][-1], name,
                 verticalalignment='center',
                 color=series['color'],
                 weight='bold',
-                fontsize=9)
+                fontsize=10)
 
     ax.set_xlabel('Release date', size=12)
     ax.set_ylabel('Theoretical peak (GFLOPS)', size=11)
 
-    matplotlib.pyplot.savefig(output_filename, bbox_inches='tight')
+    matplotlib.pyplot.savefig(output_filename, bbox_inches='tight', transparent=True)
 
 
 if __name__ == '__main__':

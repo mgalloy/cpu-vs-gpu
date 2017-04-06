@@ -20,9 +20,9 @@ cpu-vs-gpu.png: intel-sp.csv intel-dp.csv nvidia-sp.csv nvidia-dp.csv mg_cpu_vs_
 	$(IDL) -quiet -e mg_cpu_vs_gpu
 	@echo "Wrote cpu-vs-gpu.png"
 
-cpu_vs_gpu.pdf: intel-sp.csv intel-dp.csv nvidia-sp.csv nvidia-dp.csv nvidia-boost-sp.csv nvidia-boost-dp.csv cpu_vs_gpu_plot.py
+cpu_vs_gpu.pdf: intel-sp.csv intel-dp.csv nvidia-sp.csv nvidia-dp.csv cpu_vs_gpu_plot.py
 	./cpu_vs_gpu_plot.py
-	@echo "Wrote cpu_vs_gpu.png"
+	@echo "Wrote cpu_vs_gpu.pdf"
 
 cpu-vs-gpu-thumbnail.png: intel-sp.csv intel-dp.csv nvidia-sp.csv nvidia-dp.csv mg_cpu_vs_gpu.pro
 	$(IDL) -quiet -e "mg_cpu_vs_gpu, /thumbnail"
