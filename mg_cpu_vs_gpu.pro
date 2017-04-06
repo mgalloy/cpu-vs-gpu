@@ -1,5 +1,12 @@
 ; docformat = 'rst'
 
+function mg_cpu_vs_gpu_yformat, axis, index, value
+  compile_opt strictarr
+
+  return, mg_float2str(long(value), places_sep=',')
+end
+
+
 function mg_cpu_vs_gpu_julday, dates
   compile_opt strictarr, hidden
 
@@ -47,7 +54,7 @@ end
 pro mg_cpu_vs_gpu, thumbnail=thumbnail
   compile_opt strictarr, hidden
 
-  char_size = 1.25
+  char_size = 0.9
 
   !quiet = 1
 
@@ -81,7 +88,7 @@ pro mg_cpu_vs_gpu, thumbnail=thumbnail
 
   flops = [intel_sp_flops, intel_dp_flops, nvidia_sp_flops, nvidia_dp_flops]
   flops_range = [0, max(flops)]
-  flops_tick_value = 500
+  flops_tick_value = 1000
   n_flops_ticks = ceil(flops_range[1] / flops_tick_value)
   flops_range[1] = n_flops_ticks * flops_tick_value
 
@@ -93,11 +100,14 @@ pro mg_cpu_vs_gpu, thumbnail=thumbnail
   dummy = label_date(date_format='%Y')
 
   plot, intel_sp_dates, intel_sp_flops, xstyle=9, ystyle=9, /nodata, /noerase, $
-        xtitle='!CRelease date', xtickformat='label_date', xtickunits='Time', xminor=4, $
+        xtitle='!CRelease date', $
+        xtickformat='label_date', xtickunits='Time', xminor=4, $
         xmargin=[10, 12], xrange=date_range, $
-        ytitle='Theoretical peak (GFLOPS)', ymargin=[6, 2], yticks=n_flops_ticks, yrange=flops_range, $
+        ytitle='Theoretical peak (GFLOPS)', $
+        ymargin=[6, 2], yticks=n_flops_ticks, yrange=flops_range, $
+        ytickformat='mg_cpu_vs_gpu_yformat', $
         charsize=char_size, $
-        ticklen=-0.01
+        xticklen=-0.01, yticklen=1.0, ygridstyle=1
 
   mg_decomposed, 1
 
